@@ -1,0 +1,7 @@
+* Peran Analisis Data
+** Mengetahui apakah sebuah informasi valid atau tidak, dengan:
+- [ ] melihat apakah si pelapor dalam wilayah bencana atau tidak
+- [ ] persentase jumlah pelapor dalam suatu wilayah
+** Mengetahui posisi terakhir si pengguna aplikasi. Tujuan:
+- [ ] apabila terjadi laporan hilang bisa dibantu dengan melihat koordinat terakhir
+** Menampilkan peta persebaran pengguna aplikasi?
