@@ -3,5 +3,47 @@
 - [ ] melihat apakah si pelapor dalam wilayah bencana atau tidak
 - [ ] persentase jumlah pelapor dalam suatu wilayah
 ** Mengetahui posisi terakhir si pengguna aplikasi. Tujuan:
-- [ ] apabila terjadi laporan hilang bisa dibantu dengan melihat koordinat terakhir
+- [ ] apabila terjadi laporan hilang bisa dibantu dengan melihat koordinat 
+   terakhir si pelapor
 ** Menampilkan peta persebaran pengguna aplikasi?
+* Run Supervisor at Startup
+  How to run supervisor at startup
+
+  1. =sudo emacs /etc/init.d/supervisord=
+
+  #+BEGIN_SRC text    
+    # Supervisord auto-start
+    #
+    # description: Auto-starts supervisord
+    # processname: supervisord
+    # pidfile: /var/run/supervisord.pid
+    
+    SUPERVISORD=/usr/local/bin/supervisord
+    SUPERVISORCTL=/usr/local/bin/supervisorctl
+    
+    case $1 in
+    start)
+            echo -n "Starting supervisord: "
+            $SUPERVISORD
+            echo
+            ;;
+    stop)
+            echo -n "Stopping supervisord: "
+            $SUPERVISORCTL shutdown
+            echo
+            ;;
+    restart)
+            echo -n "Stopping supervisord: "
+            $SUPERVISORCTL shutdown
+            echo
+            echo -n "Starting supervisord: "
+            $SUPERVISORD
+            echo
+            ;;
+    esac  
+  #+END_SRC
+  2. =sudo chmod +x /etc/init.d/supervisord=
+
+  3. =sudo update-rc.d supervisord defaults=
+
+  4. =sudo /etc/init.d/supervisord start=
