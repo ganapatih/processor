@@ -3,37 +3,58 @@ import pymongo
 from datetime import datetime
 import json
 import sys
+from dateutil.parser import parse
 
+# create mongo connection
 c = pymongo.Connection()
 db = c["ganapatih"]
-
+# define worker
 gm_worker = gearman.GearmanWorker(["127.0.0.1"])
+t = datetime.strftime(datetime.now(), "%Y/%m/%d %H:%M:%S")
+
 
 def register_insert(gearman_worker, gearman_job):
-    t = datetime.strftime(datetime.now(), "%Y/%m/%d %H:%M:%S")
-    sys.stdout.write('[%s] :: Registering new user\n' % t)
-    db.register.insert(json.loads(gearman_job.data))
-    sys.stdout.write('[%s] :: User registered\n' % t)
+    """ registering new user """
+    sys.stdout.write("[%s] :: Registering new user\n" % t)
+    # convert string > datetime object
+    gearman_data = json.loads(gearman_job.data)
+    gearman_data.update({'timestamp': parse(gearman_data['timestamp'])})
+    # insert data > mongo
+    db.register.insert(gearman_data)
+    # job done report
+    sys.stdout.write("[%s] :: User registered\n" % t)
     return json.dumps(gearman_job.data)
 
 def korban_insert(gearman_worker, gearman_job):
-    t = datetime.strftime(datetime.now(), "%Y/%m/%d %H:%M:%S")
+    """ inserting korban data """
     sys.stdout.write('[%s] :: Inserting korban data\n' % t)
-    db.korban.insert(json.loads(gearman_job.data))
+    # converting string > datetime object
+    gearman_data = json.loads(gearman_job.data)
+    gearman_data.update({'timestamp': parse(gearman_data['timestamp'])})
+    # inserting into mongo
+    db.korban.insert(gearman_data)
+    # job done report
     sys.stdout.write('[%s] :: Korban data inserted\n' % t)
     return json.dumps(gearman_job.data)
 
 def relawan_insert(gearman_worker, gearman_job):
-    t = datetime.strftime(datetime.now(), "%Y/%m/%d %H:%M:%S")
+    """ inserting relawan data """
     sys.stdout.write('[%s] :: Inserting relawan data\n' % t)
-    db.relawan.insert(json.loads(gearman_job.data))
+    # converting string > datetime object
+    gearman_data = json.loads(gearman_job.data)
+    gearman_data.update({'timestamp': parse(gearman_data['timestamp'])})
+    # inserting > mongo
+    db.relawan.insert(gearman_data)
+    # job done report
     sys.stdout.write('[%s] :: Relawan data inserted\n' % t)
     return json.dumps(gearman_job.data)
 
-gm_worker.set_client_id('register_new_user')
-gm_worker.register_task('register', register_insert)
-gm_worker.set_client_id('insert_korban')
-gm_worker.register_task('korban', korban_insert)
-gm_worker.set_client_id('insert_relawan')
-gm_worker.register_task('relawan', relawan_insert)
-gm_worker.work()
+
+if __name__ == "__main__":
+    gm_worker.set_client_id('register_new_user')
+    gm_worker.register_task('register', register_insert)
+    gm_worker.set_client_id('insert_korban')
+    gm_worker.register_task('korban', korban_insert)
+    gm_worker.set_client_id('insert_relawan')
+    gm_worker.register_task('relawan', relawan_insert)
+    gm_worker.work()
