@@ -50,11 +50,10 @@ def relawan_insert(gearman_worker, gearman_job):
     return json.dumps(gearman_job.data)
 
 
-if __name__ == "__main__":
-    gm_worker.set_client_id('register_new_user')
-    gm_worker.register_task('register', register_insert)
-    gm_worker.set_client_id('insert_korban')
-    gm_worker.register_task('korban', korban_insert)
-    gm_worker.set_client_id('insert_relawan')
-    gm_worker.register_task('relawan', relawan_insert)
-    gm_worker.work()
+gm_worker.set_client_id('register_new_user')
+gm_worker.register_task('register', register_insert)
+gm_worker.set_client_id('insert_korban')
+gm_worker.register_task('korban', korban_insert)
+gm_worker.set_client_id('insert_relawan')
+gm_worker.register_task('relawan', relawan_insert)
+gm_worker.work()
