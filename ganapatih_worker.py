@@ -18,7 +18,7 @@ def register_insert(gearman_worker, gearman_job):
     sys.stdout.write("[%s] :: Registering new user\n" % t)
     # convert string > datetime object
     gearman_data = json.loads(gearman_job.data)
-    gearman_data.update({'timestamp': parse(gearman_data['timestamp'])})
+    gearman_data.update({'datetime': parse(gearman_data['datetime'])})
     # insert data > mongo
     db.register.insert(gearman_data)
     # job done report
@@ -30,7 +30,7 @@ def korban_insert(gearman_worker, gearman_job):
     sys.stdout.write('[%s] :: Inserting korban data\n' % t)
     # converting string > datetime object
     gearman_data = json.loads(gearman_job.data)
-    gearman_data.update({'timestamp': parse(gearman_data['timestamp'])})
+    gearman_data.update({'datetime': parse(gearman_data['datetime'])})
     # inserting into mongo
     db.korban.insert(gearman_data)
     # job done report
@@ -42,7 +42,7 @@ def relawan_insert(gearman_worker, gearman_job):
     sys.stdout.write('[%s] :: Inserting relawan data\n' % t)
     # converting string > datetime object
     gearman_data = json.loads(gearman_job.data)
-    gearman_data.update({'timestamp': parse(gearman_data['timestamp'])})
+    gearman_data.update({'datetime': parse(gearman_data['datetime'])})
     # inserting > mongo
     db.relawan.insert(gearman_data)
     # job done report
