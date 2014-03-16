@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 import sys
 from dateutil.parser import parse
+from time import sleep
 
 # create mongo connection
 c = pymongo.Connection()
@@ -50,10 +51,24 @@ def relawan_insert(gearman_worker, gearman_job):
     return json.dumps(gearman_job.data)
 
 
+def runner(obj):
+    try:
+        obj.work()
+    except:pass
+
 gm_worker.set_client_id('register_new_user')
 gm_worker.register_task('register', register_insert)
 gm_worker.set_client_id('insert_korban')
 gm_worker.register_task('korban', korban_insert)
 gm_worker.set_client_id('insert_relawan')
 gm_worker.register_task('relawan', relawan_insert)
-gm_worker.work()
+
+
+while gm_worker.command_handler_holding_job_lock == None:
+    runner(gm_worker)
+    sleep(5)
+
+
+
+    
+
